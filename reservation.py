@@ -113,14 +113,22 @@ def available(units, reservations, start_date, occupants, stay_length):
             if reservation_dict.has_key(unit): #if the unit is already in the dictionary of reserved units
                 reserved_dates_list = reservation_dict[unit] #pulls up the list of dates reserved for the given unit
 
-                for date_pair in reserved_dates_list:
+                for date_pair in reserved_dates_list: #checks all reserved dates for a given unit
                     reserved_start_date = date_pair[0]
                     reserved_end_date = date_pair[1]
 
+                    #Goal: Print message is the unit passes occupancy & availability tests
+
                     if not ((proposed_end_date <= reserved_start_date) or (proposed_start_date >= reserved_end_date)):
                         #if the proposed dates overlap with the reservation dates
+                        #this if statement is triggered
+                        #the given unit will NOT work
+                        #we break out of the inner for-loop
                         break
-                else: #used for-else 
+                        #returns us back to the next item in the units dictionary
+
+                else: #if proposed dates don't conflict with any reserved dates, we go into this else statement
+                #we didn't break out of the inner for-loop 
                     print "Unit %s (Size %d) is available." % (unit, occupancy)
 
             else:
