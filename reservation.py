@@ -94,7 +94,6 @@ def read_existing_reservations(file):
 def available(units, reservations, start_date, occupants, stay_length):
     proposed_start_date = datetime.datetime.strptime(start_date.strip(), "%m/%d/%Y")
     proposed_end_date = proposed_start_date + datetime.timedelta(int(stay_length))
-    unavailable_units = []
 
     reservation_dict = {}
     for line in reservations:
@@ -109,13 +108,7 @@ def available(units, reservations, start_date, occupants, stay_length):
         unit = item[0]
         occupancy = int(item[1])
      
-
-
-        if occupancy < int(occupants): #if a unit doesn't have enough rooms
-            unavailable_units.append(item)
-            continue
-
-        else: #if a unit has sufficient occupancy
+        if occupancy >= int(occupants): #if a unit doesn't have enough rooms
 
             if reservation_dict.has_key(unit): #if the unit is already in the dictionary of reserved units
                 reserved_dates_list = reservation_dict[unit] #pulls up the list of dates reserved for the given unit
@@ -126,15 +119,13 @@ def available(units, reservations, start_date, occupants, stay_length):
 
                     if not ((proposed_end_date <= reserved_start_date) or (proposed_start_date >= reserved_end_date)):
                         #if the proposed dates overlap with the reservation dates
-                        unavailable_units.append(item)
                         break
-                    else:
-                        continue
-                    #end, you stupid loop! Rawr!
+                else: #used for-else 
+                    print "Unit %s (Size %d) is available." % (unit, occupancy)
 
-    for unit in units: #look at the remaining units that pass occupancy & availability tests
-        if unit not in unavailable_units:
-            print "Unit %s (Size %s) is available." % (unit[0], unit[1])
+            else:
+                print "Unit %s (Size %d) is available." % (unit, occupancy)
+                    #end, you stupid loop! Rawr!
 
 def reserve(units, reservations, unit_id, start_date, stay_length):
     print "Successfully reserved"
